@@ -1,9 +1,9 @@
 package wangsen.mychafinedishbuffetbookkeeper;
 
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +12,7 @@ import android.widget.ImageButton;
 /**
  * Created by Administrator on 13-8-6.
  */
-public class BillListFragment extends android.support.v4.app.ListFragment {
+public class BillListFragment extends ListFragment {
 
     // Views
     private ImageButton mAddBtn;
