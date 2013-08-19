@@ -37,21 +37,7 @@ public class BillListFragment extends ListFragment {
         };
         String sortOrder = BookkeeperContract.Bill.COLUMN_NAME_TIME + " DESC";
         Cursor c = db.query(BookkeeperContract.Bill.TABLE_NAME, projection, null, null, null, null, sortOrder);
-        
-//        String[] fromColumns = {
-//        	BookkeeperContract.Bill.COLUMN_NAME_ADULTS_COUNT,
-//        	BookkeeperContract.Bill.COLUMN_NAME_CHILDREN_COUNT,
-//        	BookkeeperContract.Bill.COLUMN_NAME_PAYMENKT,
-//        	BookkeeperContract.Bill.COLUMN_NAME_TIME,
-//        	BookkeeperContract.Bill.COLUMN_NAME_PAYMENT_CHECK
-//        };
-//        int[] toFields = {
-//        	R.id.label_adults_count,
-//        	R.id.label_children_count,
-//        	R.id.label_payment,
-//        	R.id.label_time,
-//        	R.id.img_payment_check
-//        };
+
         mAdapter = new BillCursorAdapter(getActivity(), c, 0);
         setListAdapter(mAdapter);
     }
