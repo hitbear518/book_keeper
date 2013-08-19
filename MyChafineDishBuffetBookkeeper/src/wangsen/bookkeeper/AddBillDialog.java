@@ -1,13 +1,13 @@
-package wangsen.mychafinedishbuffetbookkeeper;
+package wangsen.bookkeeper;
 
+import wangsen.bookkeeper.provider.BookkeeperContract;
+import wangsen.bookkeeper.provider.BookkeeperContract.BillTable;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
@@ -47,24 +47,20 @@ public class AddBillDialog extends DialogFragment {
 	}
 	
 	private void saveCheck() {
-		BookkeeperDbHelper dbHelper = new BookkeeperDbHelper(getActivity());
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
-		
 		int adultsCount = mNumPickerAdult.getValue();
 		int childrenCount = mNumPickerChild.getValue();
-		int payment = adultsCount * BookkeeperContract.Bill.ADULT_COST +
-				childrenCount * BookkeeperContract.Bill.CHILD_COST;
+		int payment = adultsCount * BookkeeperContract.BillTable.ADULT_COST +
+				childrenCount * BookkeeperContract.BillTable.CHILD_COST;
 		long time = System.currentTimeMillis();
 		int billPaid = mSwitchBillPaid.isChecked() ? 1 : 0;
 		
 		ContentValues values = new ContentValues();
-		values.put(BookkeeperContract.Bill.COLUMN_NAME_ADULTS_COUNT, adultsCount);
-		values.put(BookkeeperContract.Bill.COLUMN_NAME_CHILDREN_COUNT, childrenCount);
-		values.put(BookkeeperContract.Bill.COLUMN_NAME_PAYMENKT, payment);
-		values.put(BookkeeperContract.Bill.COLUMN_NAME_TIME, time);
-		values.put(BookkeeperContract.Bill.COLUMN_NAME_PAYMENT_CHECK, billPaid);
+		values.put(BookkeeperContract.BillTable.COLUMN_NAME_ADULTS_COUNT, adultsCount);
+		values.put(BookkeeperContract.BillTable.COLUMN_NAME_CHILDREN_COUNT, childrenCount);
+		values.put(BookkeeperContract.BillTable.COLUMN_NAME_PAYMENKT, payment);
+		values.put(BookkeeperContract.BillTable.COLUMN_NAME_TIME, time);
+		values.put(BookkeeperContract.BillTable.COLUMN_NAME_PAYMENT_CHECK, billPaid);
 		
-		long newRowId = db.insert(BookkeeperContract.Bill.TABLE_NAME, null, values);
-		Log.d(Util.TAG_INSERT, "new row id = " + String.valueOf(newRowId));
+		getActivity().getContentResolver().insert(BillTable.CONTENT_URI, values);
 	}
 }

@@ -1,4 +1,4 @@
-package wangsen.mychafinedishbuffetbookkeeper;
+package wangsen.bookkeeper;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;

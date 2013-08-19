@@ -1,4 +1,4 @@
-package wangsen.mychafinedishbuffetbookkeeper;
+package wangsen.bookkeeper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

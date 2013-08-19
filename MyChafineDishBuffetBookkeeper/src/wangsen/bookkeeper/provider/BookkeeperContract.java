@@ -1,5 +1,7 @@
-package wangsen.mychafinedishbuffetbookkeeper;
+package wangsen.bookkeeper.provider;
 
+import android.content.ContentResolver;
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -9,15 +11,17 @@ public final class BookkeeperContract {
 
 	public static final int DATABASE_VERSION = 1;
 	public static final String DATABASE_NAME = "Bookkeeper.db";
+	
+	public static final String AUTHORITY = 
+			"wangsen.bookkeeper.provider";
 
-	// private static final String TEXT_TYPE = " TEXT";
 	private static final String INT_TYPE = " INTEGER";
 	private static final String COMMA_SEP = ", ";
-
+	
 	public BookkeeperContract() {
 	}
 
-	public static abstract class Bill implements BaseColumns {
+	public static abstract class BillTable implements BaseColumns {
 
 		public static final String TABLE_NAME = "bill_table";
 		public static final String COLUMN_NAME_ADULTS_COUNT = "adults_count";
@@ -40,6 +44,16 @@ public final class BookkeeperContract {
 
 		static final String SQL_DELETE_CHECKS = 
 				"DROP TABLE IF EXISTS " + TABLE_NAME;
+		
+		public static final String BILL_PATH = "bills";
+		
+		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BILL_PATH);
+		
+		public static final String CONTENT_TYPE = 
+				ContentResolver.CURSOR_DIR_BASE_TYPE + "/bills";
+		
+		public static final String CONTENT_ITEM_TYPE = 
+				ContentResolver.CURSOR_ITEM_BASE_TYPE + "/bill";
 	}
 
 }
