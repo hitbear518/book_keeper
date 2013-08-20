@@ -14,14 +14,14 @@ public final class BookkeeperContract {
 	
 	public static final String AUTHORITY = 
 			"wangsen.bookkeeper.provider";
+	public static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY);
 
 	private static final String INT_TYPE = " INTEGER";
 	private static final String COMMA_SEP = ", ";
-	
-	public BookkeeperContract() {
-	}
 
 	public static abstract class BillTable implements BaseColumns {
+		
+		private static final String MIME_TYPE_SUFFIX = "/vnd.wangsen.bookkeeper.provider.bill";
 
 		public static final String TABLE_NAME = "bill_table";
 		public static final String COLUMN_NAME_ADULTS_COUNT = "adults_count";
@@ -45,15 +45,15 @@ public final class BookkeeperContract {
 		static final String SQL_DELETE_CHECKS = 
 				"DROP TABLE IF EXISTS " + TABLE_NAME;
 		
-		public static final String BILL_PATH = "bills";
+		public static final String PATH = "bills";
 		
-		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BILL_PATH);
+		public static final Uri CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, PATH);
 		
 		public static final String CONTENT_TYPE = 
-				ContentResolver.CURSOR_DIR_BASE_TYPE + "/bills";
+				ContentResolver.CURSOR_DIR_BASE_TYPE + MIME_TYPE_SUFFIX;
 		
 		public static final String CONTENT_ITEM_TYPE = 
-				ContentResolver.CURSOR_ITEM_BASE_TYPE + "/bill";
+				ContentResolver.CURSOR_ITEM_BASE_TYPE + MIME_TYPE_SUFFIX;
 	}
 
 }

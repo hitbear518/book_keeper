@@ -8,19 +8,20 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 
 public class BookkeeperProvider extends ContentProvider {
 	
 	private BookkeeperDbHelper mDbHelper;
 	
-	private static final int CODE_BILLS = 1;
-	private static final int CODE_BILL_ID = 2;
+	private static final int MATCH_BILLS = 1;
+	private static final int MATCH_BILLS_ID = 2;
 	
-	private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
+	private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	static {
-		URI_MATCHER.addURI(BookkeeperContract.AUTHORITY, BillTable.BILL_PATH, CODE_BILLS);
-		URI_MATCHER.addURI(BookkeeperContract.AUTHORITY, BillTable.BILL_PATH  + "/#", CODE_BILL_ID);
+		sUriMatcher.addURI(BookkeeperContract.AUTHORITY, BillTable.PATH, MATCH_BILLS);
+		sUriMatcher.addURI(BookkeeperContract.AUTHORITY, BillTable.PATH  + "/#", MATCH_BILLS_ID);
 	}
 
 	@Override
@@ -35,11 +36,11 @@ public class BookkeeperProvider extends ContentProvider {
 		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 		queryBuilder.setTables(BillTable.TABLE_NAME);
 		
-		int uriType = URI_MATCHER.match(uri);
-		switch (uriType) {
-		case CODE_BILLS:
+		final int match = sUriMatcher.match(uri);
+		switch (match) {
+		case MATCH_BILLS:
 			break;
-		case CODE_BILL_ID:
+		case MATCH_BILLS_ID:
 			queryBuilder.appendWhere(BillTable._ID + " = " + uri.getLastPathSegment());
 			break;
 		default:
@@ -55,35 +56,43 @@ public class BookkeeperProvider extends ContentProvider {
 
 	@Override
 	public String getType(Uri uri) {
-		return null;
+		final int match = sUriMatcher.match(uri);
+		switch (match) {
+		case MATCH_BILLS:
+			return BillTable.CONTENT_TYPE;
+		case MATCH_BILLS_ID:
+			return BillTable.CONTENT_ITEM_TYPE;
+		default:
+			throw new IllegalArgumentException("Unknown URI: " + uri);
+		}
 	}
 
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
-		int uriCode = URI_MATCHER.match(uri);
+		final int match = sUriMatcher.match(uri);
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 		long id = 0;
-		switch (uriCode) {
-		case CODE_BILLS:
+		switch (match) {
+		case MATCH_BILLS:
 			id = db.insert(BillTable.TABLE_NAME, null, values);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
-		return Uri.parse(BillTable.BILL_PATH + "/" + id);
+		return Uri.parse(BillTable.PATH + "/" + id);
 	}
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
-		int uriCode = URI_MATCHER.match(uri);
+		final int match = sUriMatcher.match(uri);
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 		int rowsDeleted = 0;
-		switch (uriCode) {
-		case CODE_BILLS:
+		switch (match) {
+		case MATCH_BILLS:
 			rowsDeleted = db.delete(BillTable.TABLE_NAME, selection, selectionArgs);
 			break;
-		case CODE_BILL_ID:
+		case MATCH_BILLS_ID:
 			String id = uri.getLastPathSegment();
 			if (TextUtils.isEmpty(selection)) {
 				rowsDeleted = db.delete(BillTable.TABLE_NAME, 
@@ -104,14 +113,14 @@ public class BookkeeperProvider extends ContentProvider {
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
-		int uriCode = URI_MATCHER.match(uri);
+		final int match = sUriMatcher.match(uri);
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 		int rowsUpdated = 0;
-		switch (uriCode) {
-		case CODE_BILLS:
+		switch (match) {
+		case MATCH_BILLS:
 			rowsUpdated = db.update(BillTable.TABLE_NAME, values, selection, selectionArgs);
 			break;
-		case CODE_BILL_ID:
+		case MATCH_BILLS_ID:
 			String id = uri.getLastPathSegment();
 			if (TextUtils.isEmpty(selection)) {
 				rowsUpdated = db.update(BillTable.TABLE_NAME, values, 
