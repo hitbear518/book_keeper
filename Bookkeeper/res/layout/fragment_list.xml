@@ -14,7 +14,7 @@
         android:id="@+id/add_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/title_add_check"
+        android:contentDescription="@string/title_add_bill"
         android:src="@android:drawable/ic_input_add" />
 
 </LinearLayout>

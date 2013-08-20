@@ -7,5 +7,5 @@ public class Util {
 
 	public static SimpleDateFormat sdf ;
 	public static final String TAG_INSERT = "insert";
-	public static final DateFormat TIME_FORMAT = DateFormat.getTimeInstance();
+	public static final DateFormat DATE_TIME_FORMAT = DateFormat.getDateTimeInstance();
 }

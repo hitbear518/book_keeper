@@ -42,14 +42,14 @@ public class BillCursorAdapter extends CursorAdapter {
 		labelPayment.setText(cursor.getString(
 				cursor.getColumnIndex(BookkeeperContract.BillTable.COLUMN_NAME_PAYMENKT))
 				+ context.getString(R.string.yuan));
-		TextView labelTime = (TextView) view.findViewById(R.id.label_time);
+		TextView labelTime = (TextView) view.findViewById(R.id.label_date_time);
 		Date dateTime = new Date(cursor.getLong(
 				cursor.getColumnIndex(BookkeeperContract.BillTable.COLUMN_NAME_TIME)));
-		String time = Util.TIME_FORMAT.format(dateTime);
-		labelTime.setText(time);
+		String dateTimeStr = Util.DATE_TIME_FORMAT.format(dateTime);
+		labelTime.setText(dateTimeStr);
 		ImageView imgBillPaid = (ImageView) view.findViewById(R.id.img_payment_check);
 		int billPaid = cursor.getInt(
 				cursor.getColumnIndex(BookkeeperContract.BillTable.COLUMN_NAME_PAYMENT_CHECK));
-		imgBillPaid.setImageResource(billPaid == 1 ? R.drawable.btn_check_on_holo_light : R.drawable.btn_check_off_holo_light );
+		imgBillPaid.setImageResource(billPaid == 1 ? R.drawable.ic_bill_paid : R.drawable.ic_bill_not_paid );
 	}
 }

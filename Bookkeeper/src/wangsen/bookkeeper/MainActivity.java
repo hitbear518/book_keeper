@@ -129,7 +129,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return getString(R.string.title_section_check_list_frag);
+                    return getString(R.string.title_section_bill_list_frag);
                 case 1:
                     return getString(R.string.title_section_stat_frag);
             }
