@@ -1,5 +1,8 @@
 package wangsen.bookkeeper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import wangsen.bookkeeper.provider.BookkeeperContract.BillTable;
 import android.database.Cursor;
 import android.net.Uri;
@@ -8,15 +11,20 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ImageButton;
+import android.widget.ListView;
 
 /**
  * Created by Administrator on 13-8-6.
@@ -26,6 +34,7 @@ public class BillListFragment extends ListFragment implements
 	
 	private ImageButton mAddBtn;
 	private BillCursorAdapter mAdapter;
+	private List<Long> mSelectedItemIds;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -34,6 +43,8 @@ public class BillListFragment extends ListFragment implements
 		getLoaderManager().initLoader(0, null, this);
 		mAdapter = new BillCursorAdapter(getActivity(), null, 0);
 		setListAdapter(mAdapter);
+		
+		mSelectedItemIds = new ArrayList<Long>();
 	}
 	
 	@Override
@@ -51,11 +62,10 @@ public class BillListFragment extends ListFragment implements
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 			Uri  uri = Uri.parse(BillTable.CONTENT_URI + "/" + info.id);
 			getActivity().getContentResolver().delete(uri, null, null);
-			break;
+			return true;
 		default:
-			break;
+			return super.onContextItemSelected(item);
 		}
-		return super.onContextItemSelected(item);
 	}
 
 	@Override
@@ -82,7 +92,48 @@ public class BillListFragment extends ListFragment implements
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		registerForContextMenu(getListView());
+		getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		getListView().setMultiChoiceModeListener(new MultiChoiceModeListener() {
+			
+			@Override
+			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+				return false;
+			}
+			
+			@Override
+			public void onDestroyActionMode(ActionMode mode) {
+				mSelectedItemIds.clear();
+			}
+			
+			@Override
+			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+				MenuInflater inflater = mode.getMenuInflater();
+				inflater.inflate(R.menu.context_menu, menu);
+				return true;
+			}
+			
+			@Override
+			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+				switch (item.getItemId()) {
+				case R.id.action_delete:
+					deleteSelectedItems();
+					mode.finish();
+					return true;
+				default:
+					return false;
+				}
+			}
+
+			@Override
+			public void onItemCheckedStateChanged(ActionMode mode, int position,
+					long id, boolean checked) {
+				if (checked) {
+					mSelectedItemIds.add(Long.valueOf(id));
+				} else {
+					mSelectedItemIds.remove(Long.valueOf(id));
+				}
+			}
+		});
 	}
 
 	@Override
@@ -110,5 +161,11 @@ public class BillListFragment extends ListFragment implements
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		mAdapter.swapCursor(null);
+	}
+	
+	private void deleteSelectedItems() {
+		String ids = TextUtils.join(", ", mSelectedItemIds);
+		String selection = BillTable._ID + " IN (" + ids + ")";
+		getActivity().getContentResolver().delete(BillTable.CONTENT_URI, selection, null);
 	}
 }
