@@ -27,14 +27,13 @@ public class BillListFragment extends ListFragment implements
 	private ImageButton mAddBtn;
 	private BillCursorAdapter mAdapter;
 	
-	private static final int LOADER_ID = 0; 
 	private static final int DELETE_ID = Menu.FIRST + 1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		getLoaderManager().initLoader(LOADER_ID, null, this);
+		getLoaderManager().initLoader(0, null, this);
 		mAdapter = new BillCursorAdapter(getActivity(), null, 0);
 		setListAdapter(mAdapter);
 	}
@@ -90,29 +89,28 @@ public class BillListFragment extends ListFragment implements
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		switch (id) {
-		case LOADER_ID:
-			String[] projection = { BillTable._ID,
-					BillTable.COLUMN_NAME_ADULTS_COUNT,
-					BillTable.COLUMN_NAME_CHILDREN_COUNT,
-					BillTable.COLUMN_NAME_PAYMENKT, BillTable.COLUMN_NAME_TIME,
-					BillTable.COLUMN_NAME_PAYMENT_CHECK };
-			String sortOrder = BillTable.COLUMN_NAME_TIME + " DESC";
-			CursorLoader cursorLoader = new CursorLoader(getActivity(),
-					BillTable.CONTENT_URI, projection, null, null, sortOrder);
-			return cursorLoader;
-		default:
-			return null;
-		}
+		String[] projection = { 
+				BillTable._ID,
+				BillTable.COLUMN_NAME_ADULTS_COUNT,
+				BillTable.COLUMN_NAME_CHILDREN_COUNT,
+				BillTable.COLUMN_NAME_PAYMENKT, BillTable.COLUMN_NAME_TIME,
+				BillTable.COLUMN_NAME_PAYMENT_CHECK };
+		
+		String sortOrder = BillTable.COLUMN_NAME_TIME + " DESC";
+		
+		CursorLoader cursorLoader = new CursorLoader(getActivity(),
+				BillTable.CONTENT_URI, projection, null, null, sortOrder);
+		
+		return cursorLoader;
 	}
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		mAdapter.changeCursor(data);
+		mAdapter.swapCursor(data);
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
-		mAdapter.changeCursor(null);
+		mAdapter.swapCursor(null);
 	}
 }
