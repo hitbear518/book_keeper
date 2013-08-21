@@ -54,7 +54,7 @@ public class BillCursorAdapter extends CursorAdapter {
 		labelTime.setText(dateTimeStr);
 		ImageView imgBillPaid = (ImageView) view.findViewById(R.id.img_payment_check);
 		int billPaid = cursor.getInt(
-				cursor.getColumnIndex(BillTable.COLUMN_NAME_PAYMENT_CHECK));
+				cursor.getColumnIndex(BillTable.COLUMN_NAME_BILL_PAID));
 		imgBillPaid.setImageResource(billPaid == 1 ? R.drawable.ic_bill_paid : R.drawable.ic_bill_not_paid );
 	}
 }

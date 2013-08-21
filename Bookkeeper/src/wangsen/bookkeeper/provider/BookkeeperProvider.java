@@ -133,6 +133,7 @@ public class BookkeeperProvider extends ContentProvider {
 		default:
 			throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
+		getContext().getContentResolver().notifyChange(uri, null);
 		return rowsUpdated;
 	}
 

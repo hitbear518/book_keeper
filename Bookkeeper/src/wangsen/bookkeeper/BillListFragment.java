@@ -1,20 +1,18 @@
 package wangsen.bookkeeper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import wangsen.bookkeeper.provider.BookkeeperContract.BillTable;
 import android.database.Cursor;
+import android.database.CursorWrapper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.text.TextUtils;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +32,6 @@ public class BillListFragment extends ListFragment implements
 	
 	private ImageButton mAddBtn;
 	private BillCursorAdapter mAdapter;
-	private List<Long> mSelectedItemIds;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -43,8 +40,6 @@ public class BillListFragment extends ListFragment implements
 		getLoaderManager().initLoader(0, null, this);
 		mAdapter = new BillCursorAdapter(getActivity(), null, 0);
 		setListAdapter(mAdapter);
-		
-		mSelectedItemIds = new ArrayList<Long>();
 	}
 	
 	@Override
@@ -82,7 +77,7 @@ public class BillListFragment extends ListFragment implements
 		mAddBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				new AddBillDialog().show(getFragmentManager(), "dialog");
+				new EditBillDialog().show(getFragmentManager(), "dialog");
 			}
 		});
 
@@ -95,20 +90,27 @@ public class BillListFragment extends ListFragment implements
 		getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		getListView().setMultiChoiceModeListener(new MultiChoiceModeListener() {
 			
+			private boolean mMultipleItemCheckked;
+			
 			@Override
 			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+				if (mMultipleItemCheckked) {
+					menu.findItem(R.id.action_edit).setEnabled(false);
+				} else {
+					menu.findItem(R.id.action_edit).setEnabled(true);
+				}
 				return false;
 			}
 			
 			@Override
 			public void onDestroyActionMode(ActionMode mode) {
-				mSelectedItemIds.clear();
 			}
 			
 			@Override
 			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 				MenuInflater inflater = mode.getMenuInflater();
 				inflater.inflate(R.menu.context_menu, menu);
+				mMultipleItemCheckked = false;
 				return true;
 			}
 			
@@ -119,6 +121,10 @@ public class BillListFragment extends ListFragment implements
 					deleteSelectedItems();
 					mode.finish();
 					return true;
+				case R.id.action_edit:
+					editItem();
+					mode.finish();
+					return true;
 				default:
 					return false;
 				}
@@ -127,10 +133,9 @@ public class BillListFragment extends ListFragment implements
 			@Override
 			public void onItemCheckedStateChanged(ActionMode mode, int position,
 					long id, boolean checked) {
-				if (checked) {
-					mSelectedItemIds.add(Long.valueOf(id));
-				} else {
-					mSelectedItemIds.remove(Long.valueOf(id));
+				if (getListView().getCheckedItemCount() > 1 != mMultipleItemCheckked) {
+					mMultipleItemCheckked = getListView().getCheckedItemCount() > 1;
+					mode.invalidate();
 				}
 			}
 		});
@@ -143,7 +148,7 @@ public class BillListFragment extends ListFragment implements
 				BillTable.COLUMN_NAME_ADULTS_COUNT,
 				BillTable.COLUMN_NAME_CHILDREN_COUNT,
 				BillTable.COLUMN_NAME_PAYMENKT, BillTable.COLUMN_NAME_TIME,
-				BillTable.COLUMN_NAME_PAYMENT_CHECK };
+				BillTable.COLUMN_NAME_BILL_PAID };
 		
 		String sortOrder = BillTable.COLUMN_NAME_TIME + " DESC";
 		
@@ -164,8 +169,39 @@ public class BillListFragment extends ListFragment implements
 	}
 	
 	private void deleteSelectedItems() {
-		String ids = TextUtils.join(", ", mSelectedItemIds);
-		String selection = BillTable._ID + " IN (" + ids + ")";
-		getActivity().getContentResolver().delete(BillTable.CONTENT_URI, selection, null);
+		long[] idsLong = getListView().getCheckedItemIds();
+		StringBuilder questionMarksBuilder = new StringBuilder();
+		String[] selectionArgs = new String[idsLong.length];
+		for (int i = 0; i < idsLong.length; i++) {
+			questionMarksBuilder.append("?, ");
+			selectionArgs[i] = String.valueOf(idsLong[i]);
+		}
+		String questionMarks = questionMarksBuilder.substring(0, questionMarksBuilder.length() - 2);
+		String selection = BillTable._ID + " IN (" + questionMarks + ")";
+		getActivity().getContentResolver().delete(BillTable.CONTENT_URI, selection, selectionArgs);
+	}
+	
+	private void editItem() {
+		SparseBooleanArray positions = getListView().getCheckedItemPositions();
+		int position = positions.keyAt(0);
+		CursorWrapper c = (CursorWrapper) getListView().getItemAtPosition(position);
+		
+		int adultsCount = c.getInt(
+				c.getColumnIndexOrThrow(BillTable.COLUMN_NAME_ADULTS_COUNT));
+		int childrenCount = c.getInt(
+				c.getColumnIndexOrThrow(BillTable.COLUMN_NAME_CHILDREN_COUNT));
+		int billPaid = c.getInt(
+				c.getColumnIndexOrThrow(BillTable.COLUMN_NAME_BILL_PAID));
+		long rowId = c.getLong(
+				c.getColumnIndexOrThrow(BillTable._ID));
+		
+		EditBillDialog dialog = new EditBillDialog();
+		Bundle args = new Bundle();
+		args.putInt(EditBillDialog.ARG_ADULTS_COUNT, adultsCount);
+		args.putInt(EditBillDialog.ARG_CHILDREN_COUNT, childrenCount);
+		args.putBoolean(EditBillDialog.ARG_BILL_PAID, billPaid > 0 ? true : false);
+		args.putLong(EditBillDialog.ARG_ROW_ID, rowId);
+		dialog.setArguments(args);
+		dialog.show(getFragmentManager(), "dialog");
 	}
 }

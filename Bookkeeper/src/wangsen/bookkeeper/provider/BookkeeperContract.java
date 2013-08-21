@@ -28,7 +28,7 @@ public final class BookkeeperContract {
 		public static final String COLUMN_NAME_CHILDREN_COUNT = "children_count";
 		public static final String COLUMN_NAME_TIME = "time";
 		public static final String COLUMN_NAME_PAYMENKT = "payment";
-		public static final String COLUMN_NAME_PAYMENT_CHECK = "payment_check";
+		public static final String COLUMN_NAME_BILL_PAID = "bill_paid";
 
 		public static final int ADULT_COST = 30;
 		public static final int CHILD_COST = 15;
@@ -40,7 +40,7 @@ public final class BookkeeperContract {
 			+ COLUMN_NAME_CHILDREN_COUNT + INT_TYPE + COMMA_SEP 
 			+ COLUMN_NAME_TIME + INT_TYPE + COMMA_SEP 
 			+ COLUMN_NAME_PAYMENKT + INT_TYPE + COMMA_SEP 
-			+ COLUMN_NAME_PAYMENT_CHECK + INT_TYPE + " );";
+			+ COLUMN_NAME_BILL_PAID + INT_TYPE + " );";
 
 		static final String SQL_DELETE_CHECKS = 
 				"DROP TABLE IF EXISTS " + TABLE_NAME;

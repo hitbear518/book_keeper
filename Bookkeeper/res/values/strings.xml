@@ -7,6 +7,7 @@
     <string name="title_section_stat_frag">统计</string>
     <string name="bookkeep">记账</string>
     <string name="title_add_bill">新增</string>
+    <string name="title_edit_bill">编辑</string>
     <string name="adult">成人</string>
     <string name="child">儿童</string>
     <string name="billPaid">已结账</string>
@@ -16,5 +17,6 @@
     <string name="authority">wangsen.bookkeeper.provider</string>
     
     <string name="menu_delete">删除</string>
+    <string name="menu_edit">编辑</string>
 
 </resources>
