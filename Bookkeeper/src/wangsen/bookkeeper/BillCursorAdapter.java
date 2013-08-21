@@ -30,11 +30,6 @@ public class BillCursorAdapter extends CursorAdapter {
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		
-		TextView labelRowId = (TextView) view.findViewById(R.id.label_row_id);
-		labelRowId.setText(cursor.getLong(
-				cursor.getColumnIndex(BillTable._ID)) + "");
-		
 		TextView labelAdultsCount = (TextView) view.findViewById(R.id.label_adults_count);
 		labelAdultsCount.setText(cursor.getInt(
 				cursor.getColumnIndex(BillTable.COLUMN_NAME_ADULTS_COUNT))
@@ -45,7 +40,7 @@ public class BillCursorAdapter extends CursorAdapter {
 				+ context.getString(R.string.child));
 		TextView labelPayment = (TextView) view.findViewById(R.id.label_payment);
 		labelPayment.setText(cursor.getInt(
-				cursor.getColumnIndex(BillTable.COLUMN_NAME_PAYMENKT))
+				cursor.getColumnIndex(BillTable.COLUMN_NAME_PAYMENT))
 				+ context.getString(R.string.yuan));
 		TextView labelTime = (TextView) view.findViewById(R.id.label_date_time);
 		Date dateTime = new Date(cursor.getLong(

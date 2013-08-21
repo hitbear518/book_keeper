@@ -3,10 +3,10 @@
 
     <string name="app_name">Bookkeeper</string>
     <string name="action_settings">Settings</string>
-    <string name="title_section_bill_list_frag">表单</string>
-    <string name="title_section_stat_frag">统计</string>
+    <string name="title_tab_bill_list_frag">表单</string>
+    <string name="title_tab_statistics_frag">统计</string>
     <string name="bookkeep">记账</string>
-    <string name="title_add_bill">新增</string>
+    <string name="title_new_bill">新增</string>
     <string name="title_edit_bill">编辑</string>
     <string name="adult">成人</string>
     <string name="child">儿童</string>
@@ -14,9 +14,13 @@
     <string name="yes">是</string>
     <string name="no">否</string>
     <string name="yuan">元</string>
+    <string name="income_day">今日总收入 </string>
+    <string name="income_week">本周总收入 </string>
+    <string name="income_month">本月总收入 </string>
     <string name="authority">wangsen.bookkeeper.provider</string>
     
     <string name="menu_delete">删除</string>
     <string name="menu_edit">编辑</string>
+    <string name="menu_refresh">刷新</string>
 
 </resources>

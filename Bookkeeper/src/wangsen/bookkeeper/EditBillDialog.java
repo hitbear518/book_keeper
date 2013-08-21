@@ -16,6 +16,8 @@ import android.widget.Switch;
 
 public class EditBillDialog extends DialogFragment {
 	
+	public static final String FRAG_TAG = "dialog";
+	
 	public static final String ARG_ADULTS_COUNT = "adults count";
 	public static final String ARG_CHILDREN_COUNT = "children count";
 	public static final String ARG_BILL_PAID = "bill paid";
@@ -31,7 +33,7 @@ public class EditBillDialog extends DialogFragment {
 		if (getArguments() != null) {
 			builder.setTitle(R.string.title_edit_bill);
 		} else {
-			builder.setTitle(R.string.title_add_bill);
+			builder.setTitle(R.string.title_new_bill);
 		}
 		builder.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -84,7 +86,7 @@ public class EditBillDialog extends DialogFragment {
 		ContentValues values = new ContentValues();
 		values.put(BillTable.COLUMN_NAME_ADULTS_COUNT, adultsCount);
 		values.put(BillTable.COLUMN_NAME_CHILDREN_COUNT, childrenCount);
-		values.put(BillTable.COLUMN_NAME_PAYMENKT, payment);
+		values.put(BillTable.COLUMN_NAME_PAYMENT, payment);
 		values.put(BillTable.COLUMN_NAME_TIME, time);
 		values.put(BillTable.COLUMN_NAME_BILL_PAID, billPaid);
 		
@@ -101,7 +103,7 @@ public class EditBillDialog extends DialogFragment {
 		ContentValues values = new ContentValues();
 		values.put(BillTable.COLUMN_NAME_ADULTS_COUNT, adultsCount);
 		values.put(BillTable.COLUMN_NAME_CHILDREN_COUNT, childrenCount);
-		values.put(BillTable.COLUMN_NAME_PAYMENKT, payment);
+		values.put(BillTable.COLUMN_NAME_PAYMENT, payment);
 		values.put(BillTable.COLUMN_NAME_BILL_PAID, billPaid);
 		
 		long rowId = getArguments().getLong(ARG_ROW_ID);

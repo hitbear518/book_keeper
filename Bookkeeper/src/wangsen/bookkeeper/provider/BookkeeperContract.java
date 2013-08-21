@@ -27,8 +27,10 @@ public final class BookkeeperContract {
 		public static final String COLUMN_NAME_ADULTS_COUNT = "adults_count";
 		public static final String COLUMN_NAME_CHILDREN_COUNT = "children_count";
 		public static final String COLUMN_NAME_TIME = "time";
-		public static final String COLUMN_NAME_PAYMENKT = "payment";
+		public static final String COLUMN_NAME_PAYMENT = "payment";
 		public static final String COLUMN_NAME_BILL_PAID = "bill_paid";
+		public static final String COLUMN_NAME_INCOME_SUM = 
+				"SUM("+ BillTable.COLUMN_NAME_PAYMENT + ")";
 
 		public static final int ADULT_COST = 30;
 		public static final int CHILD_COST = 15;
@@ -39,7 +41,7 @@ public final class BookkeeperContract {
 			+ COLUMN_NAME_ADULTS_COUNT + INT_TYPE + COMMA_SEP
 			+ COLUMN_NAME_CHILDREN_COUNT + INT_TYPE + COMMA_SEP 
 			+ COLUMN_NAME_TIME + INT_TYPE + COMMA_SEP 
-			+ COLUMN_NAME_PAYMENKT + INT_TYPE + COMMA_SEP 
+			+ COLUMN_NAME_PAYMENT + INT_TYPE + COMMA_SEP 
 			+ COLUMN_NAME_BILL_PAID + INT_TYPE + " );";
 
 		static final String SQL_DELETE_CHECKS = 

@@ -3,7 +3,6 @@ package wangsen.bookkeeper;
 import wangsen.bookkeeper.provider.BookkeeperContract.BillTable;
 import android.database.Cursor;
 import android.database.CursorWrapper;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -11,8 +10,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,8 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView.MultiChoiceModeListener;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ImageButton;
 import android.widget.ListView;
 
 /**
@@ -30,58 +25,23 @@ import android.widget.ListView;
 public class BillListFragment extends ListFragment implements
 		LoaderCallbacks<Cursor> {
 	
-	private ImageButton mAddBtn;
 	private BillCursorAdapter mAdapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		setHasOptionsMenu(true);
+		
 		getLoaderManager().initLoader(0, null, this);
 		mAdapter = new BillCursorAdapter(getActivity(), null, 0);
 		setListAdapter(mAdapter);
-	}
-	
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		MenuInflater inflater = getActivity().getMenuInflater();
-		inflater.inflate(R.menu.context_menu, menu);
-	}
-	
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_delete:
-			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-			Uri  uri = Uri.parse(BillTable.CONTENT_URI + "/" + info.id);
-			getActivity().getContentResolver().delete(uri, null, null);
-			return true;
-		default:
-			return super.onContextItemSelected(item);
-		}
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View root = inflater.inflate(R.layout.fragment_list, container, false);
-
-		mAddBtn = (ImageButton) root.findViewById(R.id.add_btn);
-		mAddBtn.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new EditBillDialog().show(getFragmentManager(), "dialog");
-			}
-		});
-
-		return root;
+		return inflater.inflate(R.layout.fragment_list, container, false);
 	}
 	
 	@Override
@@ -109,7 +69,7 @@ public class BillListFragment extends ListFragment implements
 			@Override
 			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 				MenuInflater inflater = mode.getMenuInflater();
-				inflater.inflate(R.menu.context_menu, menu);
+				inflater.inflate(R.menu.list_context_menu, menu);
 				mMultipleItemCheckked = false;
 				return true;
 			}
@@ -140,6 +100,22 @@ public class BillListFragment extends ListFragment implements
 			}
 		});
 	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.list_menu, menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_new:
+			new EditBillDialog().show(getFragmentManager(), EditBillDialog.FRAG_TAG);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);		
+		}
+	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -147,13 +123,18 @@ public class BillListFragment extends ListFragment implements
 				BillTable._ID,
 				BillTable.COLUMN_NAME_ADULTS_COUNT,
 				BillTable.COLUMN_NAME_CHILDREN_COUNT,
-				BillTable.COLUMN_NAME_PAYMENKT, BillTable.COLUMN_NAME_TIME,
+				BillTable.COLUMN_NAME_PAYMENT, BillTable.COLUMN_NAME_TIME,
 				BillTable.COLUMN_NAME_BILL_PAID };
+		
+		String selection = BillTable.COLUMN_NAME_TIME + " > ?";
+		String[] selectionArgs = {
+				String.valueOf(Util.dayStartMillis())
+		};
 		
 		String sortOrder = BillTable.COLUMN_NAME_TIME + " DESC";
 		
 		CursorLoader cursorLoader = new CursorLoader(getActivity(),
-				BillTable.CONTENT_URI, projection, null, null, sortOrder);
+				BillTable.CONTENT_URI, projection, selection, selectionArgs, sortOrder);
 		
 		return cursorLoader;
 	}
@@ -202,6 +183,6 @@ public class BillListFragment extends ListFragment implements
 		args.putBoolean(EditBillDialog.ARG_BILL_PAID, billPaid > 0 ? true : false);
 		args.putLong(EditBillDialog.ARG_ROW_ID, rowId);
 		dialog.setArguments(args);
-		dialog.show(getFragmentManager(), "dialog");
+		dialog.show(getFragmentManager(), EditBillDialog.FRAG_TAG);
 	}
 }
