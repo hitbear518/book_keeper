@@ -35,7 +35,7 @@ public final class BookkeeperContract {
 		public static final int ADULT_COST = 30;
 		public static final int CHILD_COST = 15;
 
-		static final String SQL_CREATE_CHECKS = 
+		static final String SQL_CREATE_BILL_TABLE = 
 			"CREATE TABLE " + TABLE_NAME + " (" 
 			+ _ID + " INTEGER PRIMARY KEY, "
 			+ COLUMN_NAME_ADULTS_COUNT + INT_TYPE + COMMA_SEP
