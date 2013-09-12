@@ -8,13 +8,13 @@ import android.provider.BaseColumns;
  * Created by Administrator on 13-8-6.
  */
 public final class BookkeeperContract {
-
-	public static final int DATABASE_VERSION = 1;
-	public static final String DATABASE_NAME = "Bookkeeper.db";
 	
 	public static final String AUTHORITY = 
 			"wangsen.bookkeeper.provider";
 	public static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY);
+	
+	public static final int DATABASE_VERSION = 1;
+	public static final String DATABASE_NAME = "Bookkeeper.db";
 
 	private static final String PRIMARY_KEY = " primary key";
 	private static final String INT_TYPE = " INTEGER";
