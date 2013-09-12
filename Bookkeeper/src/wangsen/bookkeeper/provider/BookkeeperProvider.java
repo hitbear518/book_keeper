@@ -1,6 +1,6 @@
 package wangsen.bookkeeper.provider;
 
-import wangsen.bookkeeper.provider.BookkeeperContract.BillTable;
+import wangsen.bookkeeper.provider.BookkeeperContract.Bills;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -19,8 +19,8 @@ public class BookkeeperProvider extends ContentProvider {
 	
 	private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	static {
-		sUriMatcher.addURI(BookkeeperContract.AUTHORITY, BillTable.PATH, MATCH_BILLS);
-		sUriMatcher.addURI(BookkeeperContract.AUTHORITY, BillTable.PATH  + "/#", MATCH_BILLS_ID);
+		sUriMatcher.addURI(BookkeeperContract.AUTHORITY, Bills.PATH, MATCH_BILLS);
+		sUriMatcher.addURI(BookkeeperContract.AUTHORITY, Bills.PATH  + "/#", MATCH_BILLS_ID);
 	}
 
 	@Override
@@ -33,14 +33,14 @@ public class BookkeeperProvider extends ContentProvider {
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
 		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-		queryBuilder.setTables(BillTable.TABLE_NAME);
+		queryBuilder.setTables(Bills.TABLE_NAME);
 		
 		final int match = sUriMatcher.match(uri);
 		switch (match) {
 		case MATCH_BILLS:
 			break;
 		case MATCH_BILLS_ID:
-			queryBuilder.appendWhere(BillTable._ID + " = " + uri.getLastPathSegment());
+			queryBuilder.appendWhere(Bills._ID + " = " + uri.getLastPathSegment());
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -58,9 +58,9 @@ public class BookkeeperProvider extends ContentProvider {
 		final int match = sUriMatcher.match(uri);
 		switch (match) {
 		case MATCH_BILLS:
-			return BillTable.CONTENT_TYPE;
+			return Bills.CONTENT_TYPE;
 		case MATCH_BILLS_ID:
-			return BillTable.CONTENT_ITEM_TYPE;
+			return Bills.CONTENT_ITEM_TYPE;
 		default:
 			throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
@@ -73,13 +73,13 @@ public class BookkeeperProvider extends ContentProvider {
 		long id = 0;
 		switch (match) {
 		case MATCH_BILLS:
-			id = db.insert(BillTable.TABLE_NAME, null, values);
+			id = db.insert(Bills.TABLE_NAME, null, values);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
-		return Uri.parse(BillTable.PATH + "/" + id);
+		return Uri.parse(Bills.PATH + "/" + id);
 	}
 
 	@Override
@@ -89,16 +89,16 @@ public class BookkeeperProvider extends ContentProvider {
 		int rowsDeleted = 0;
 		switch (match) {
 		case MATCH_BILLS:
-			rowsDeleted = db.delete(BillTable.TABLE_NAME, selection, selectionArgs);
+			rowsDeleted = db.delete(Bills.TABLE_NAME, selection, selectionArgs);
 			break;
 		case MATCH_BILLS_ID:
 			String id = uri.getLastPathSegment();
 			if (TextUtils.isEmpty(selection)) {
-				rowsDeleted = db.delete(BillTable.TABLE_NAME, 
-						BillTable._ID + "=" + id, null);
+				rowsDeleted = db.delete(Bills.TABLE_NAME, 
+						Bills._ID + "=" + id, null);
 			} else {
-				rowsDeleted = db.delete(BillTable.TABLE_NAME, 
-						BillTable._ID + "=" + id + " and " + selection, 
+				rowsDeleted = db.delete(Bills.TABLE_NAME, 
+						Bills._ID + "=" + id + " and " + selection, 
 						selectionArgs);
 			}
 			break;
@@ -117,16 +117,16 @@ public class BookkeeperProvider extends ContentProvider {
 		int rowsUpdated = 0;
 		switch (match) {
 		case MATCH_BILLS:
-			rowsUpdated = db.update(BillTable.TABLE_NAME, values, selection, selectionArgs);
+			rowsUpdated = db.update(Bills.TABLE_NAME, values, selection, selectionArgs);
 			break;
 		case MATCH_BILLS_ID:
 			String id = uri.getLastPathSegment();
 			if (TextUtils.isEmpty(selection)) {
-				rowsUpdated = db.update(BillTable.TABLE_NAME, values, 
-						BillTable._ID + "=" + id, null);
+				rowsUpdated = db.update(Bills.TABLE_NAME, values, 
+						Bills._ID + "=" + id, null);
 			} else {
-				rowsUpdated = db.update(BillTable.TABLE_NAME, values, 
-						BillTable._ID + "=" + id + " and " + selection, 
+				rowsUpdated = db.update(Bills.TABLE_NAME, values, 
+						Bills._ID + "=" + id + " and " + selection, 
 						selectionArgs);
 			}
 			break;

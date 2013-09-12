@@ -1,6 +1,6 @@
 package wangsen.bookkeeper;
 
-import wangsen.bookkeeper.provider.BookkeeperContract.BillTable;
+import wangsen.bookkeeper.provider.BookkeeperContract.Bills;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -45,10 +45,10 @@ public class StatisticsFragment extends Fragment
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		String[] projection = {
-				BillTable.COLUMN_NAME_INCOME_SUM
+				Bills.COLUMN_NAME_INCOME_SUM
 		};
 		
-		String selection = BillTable.COLUMN_NAME_TIME + " > ?";
+		String selection = Bills.COLUMN_NAME_TIME + " > ?";
 		String[] selectionArgs = new String[1];
 		switch (id) {
 		case LOADER_ID_DAY:
@@ -64,7 +64,7 @@ public class StatisticsFragment extends Fragment
 			throw new IllegalArgumentException("Unknown loader id: " + id);
 		}
 		CursorLoader cursorLoader = new CursorLoader(getActivity(),
-				BillTable.CONTENT_URI, projection, selection, selectionArgs, null);
+				Bills.CONTENT_URI, projection, selection, selectionArgs, null);
 		return cursorLoader;
 	}
 
@@ -72,7 +72,7 @@ public class StatisticsFragment extends Fragment
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		data.moveToFirst();
 		int incomeSum = data.getInt(
-				data.getColumnIndexOrThrow(BillTable.COLUMN_NAME_INCOME_SUM));
+				data.getColumnIndexOrThrow(Bills.COLUMN_NAME_INCOME_SUM));
 		switch (loader.getId()) {
 		case LOADER_ID_DAY:
 			mLabelIncomeDay.setText(getString(R.string.income_day) +

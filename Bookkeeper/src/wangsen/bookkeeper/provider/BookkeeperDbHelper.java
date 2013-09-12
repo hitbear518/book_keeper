@@ -15,12 +15,12 @@ public class BookkeeperDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(BookkeeperContract.BillTable.SQL_CREATE_BILL_TABLE);
+        db.execSQL(BookkeeperContract.Bills.SQL_CREATE_BILL_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(BookkeeperContract.BillTable.SQL_DELETE_CHECKS);
+        db.execSQL(BookkeeperContract.Bills.SQL_DELETE_BILL_TABLE);
         onCreate(db);
     }
 }

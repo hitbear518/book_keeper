@@ -1,7 +1,7 @@
 package wangsen.bookkeeper;
 
 import wangsen.bookkeeper.provider.BookkeeperContract;
-import wangsen.bookkeeper.provider.BookkeeperContract.BillTable;
+import wangsen.bookkeeper.provider.BookkeeperContract.Bills;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
@@ -78,36 +78,36 @@ public class EditBillDialog extends DialogFragment {
 	private void insertBill() {
 		int adultsCount = mNumPickerAdult.getValue();
 		int childrenCount = mNumPickerChild.getValue();
-		int payment = adultsCount * BookkeeperContract.BillTable.ADULT_COST +
-				childrenCount * BookkeeperContract.BillTable.CHILD_COST;
+		int payment = adultsCount * BookkeeperContract.Bills.ADULT_COST +
+				childrenCount * BookkeeperContract.Bills.CHILD_COST;
 		long time = System.currentTimeMillis();
 		int billPaid = mSwitchBillPaid.isChecked() ? 1 : 0;
 		
 		ContentValues values = new ContentValues();
-		values.put(BillTable.COLUMN_NAME_ADULTS_COUNT, adultsCount);
-		values.put(BillTable.COLUMN_NAME_CHILDREN_COUNT, childrenCount);
-		values.put(BillTable.COLUMN_NAME_PAYMENT, payment);
-		values.put(BillTable.COLUMN_NAME_TIME, time);
-		values.put(BillTable.COLUMN_NAME_BILL_PAID, billPaid);
+		values.put(Bills.COLUMN_NAME_ADULTS_COUNT, adultsCount);
+		values.put(Bills.COLUMN_NAME_CHILDREN_COUNT, childrenCount);
+		values.put(Bills.COLUMN_NAME_PAYMENT, payment);
+		values.put(Bills.COLUMN_NAME_TIME, time);
+		values.put(Bills.COLUMN_NAME_BILL_PAID, billPaid);
 		
-		getActivity().getContentResolver().insert(BillTable.CONTENT_URI, values);
+		getActivity().getContentResolver().insert(Bills.CONTENT_URI, values);
 	}
 	
 	private void updateBill() {
 		int adultsCount = mNumPickerAdult.getValue();
 		int childrenCount = mNumPickerChild.getValue();
-		int payment = adultsCount * BookkeeperContract.BillTable.ADULT_COST +
-				childrenCount * BookkeeperContract.BillTable.CHILD_COST;
+		int payment = adultsCount * BookkeeperContract.Bills.ADULT_COST +
+				childrenCount * BookkeeperContract.Bills.CHILD_COST;
 		int billPaid = mSwitchBillPaid.isChecked() ? 1 : 0;
 		
 		ContentValues values = new ContentValues();
-		values.put(BillTable.COLUMN_NAME_ADULTS_COUNT, adultsCount);
-		values.put(BillTable.COLUMN_NAME_CHILDREN_COUNT, childrenCount);
-		values.put(BillTable.COLUMN_NAME_PAYMENT, payment);
-		values.put(BillTable.COLUMN_NAME_BILL_PAID, billPaid);
+		values.put(Bills.COLUMN_NAME_ADULTS_COUNT, adultsCount);
+		values.put(Bills.COLUMN_NAME_CHILDREN_COUNT, childrenCount);
+		values.put(Bills.COLUMN_NAME_PAYMENT, payment);
+		values.put(Bills.COLUMN_NAME_BILL_PAID, billPaid);
 		
 		long rowId = getArguments().getLong(ARG_ROW_ID);
-		Uri uri = Uri.withAppendedPath(BillTable.CONTENT_URI, String.valueOf(rowId));
+		Uri uri = Uri.withAppendedPath(Bills.CONTENT_URI, String.valueOf(rowId));
 		
 		getActivity().getContentResolver().update(uri, values, null, null);
 	}

@@ -1,6 +1,6 @@
 package wangsen.bookkeeper;
 
-import wangsen.bookkeeper.provider.BookkeeperContract.BillTable;
+import wangsen.bookkeeper.provider.BookkeeperContract.Bills;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.os.Bundle;
@@ -120,21 +120,21 @@ public class BillListFragment extends ListFragment implements
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		String[] projection = { 
-				BillTable._ID,
-				BillTable.COLUMN_NAME_ADULTS_COUNT,
-				BillTable.COLUMN_NAME_CHILDREN_COUNT,
-				BillTable.COLUMN_NAME_PAYMENT, BillTable.COLUMN_NAME_TIME,
-				BillTable.COLUMN_NAME_BILL_PAID };
+				Bills._ID,
+				Bills.COLUMN_NAME_ADULTS_COUNT,
+				Bills.COLUMN_NAME_CHILDREN_COUNT,
+				Bills.COLUMN_NAME_PAYMENT, Bills.COLUMN_NAME_TIME,
+				Bills.COLUMN_NAME_BILL_PAID };
 		
-		String selection = BillTable.COLUMN_NAME_TIME + " > ?";
+		String selection = Bills.COLUMN_NAME_TIME + " > ?";
 		String[] selectionArgs = {
 				String.valueOf(Util.dayStartMillis())
 		};
 		
-		String sortOrder = BillTable.COLUMN_NAME_TIME + " DESC";
+		String sortOrder = Bills.COLUMN_NAME_TIME + " DESC";
 		
 		CursorLoader cursorLoader = new CursorLoader(getActivity(),
-				BillTable.CONTENT_URI, projection, selection, selectionArgs, sortOrder);
+				Bills.CONTENT_URI, projection, selection, selectionArgs, sortOrder);
 		
 		return cursorLoader;
 	}
@@ -158,8 +158,8 @@ public class BillListFragment extends ListFragment implements
 			selectionArgs[i] = String.valueOf(idsLong[i]);
 		}
 		String questionMarks = questionMarksBuilder.substring(0, questionMarksBuilder.length() - 2);
-		String selection = BillTable._ID + " IN (" + questionMarks + ")";
-		getActivity().getContentResolver().delete(BillTable.CONTENT_URI, selection, selectionArgs);
+		String selection = Bills._ID + " IN (" + questionMarks + ")";
+		getActivity().getContentResolver().delete(Bills.CONTENT_URI, selection, selectionArgs);
 	}
 	
 	private void editItem() {
@@ -168,13 +168,13 @@ public class BillListFragment extends ListFragment implements
 		CursorWrapper c = (CursorWrapper) getListView().getItemAtPosition(position);
 		
 		int adultsCount = c.getInt(
-				c.getColumnIndexOrThrow(BillTable.COLUMN_NAME_ADULTS_COUNT));
+				c.getColumnIndexOrThrow(Bills.COLUMN_NAME_ADULTS_COUNT));
 		int childrenCount = c.getInt(
-				c.getColumnIndexOrThrow(BillTable.COLUMN_NAME_CHILDREN_COUNT));
+				c.getColumnIndexOrThrow(Bills.COLUMN_NAME_CHILDREN_COUNT));
 		int billPaid = c.getInt(
-				c.getColumnIndexOrThrow(BillTable.COLUMN_NAME_BILL_PAID));
+				c.getColumnIndexOrThrow(Bills.COLUMN_NAME_BILL_PAID));
 		long rowId = c.getLong(
-				c.getColumnIndexOrThrow(BillTable._ID));
+				c.getColumnIndexOrThrow(Bills._ID));
 		
 		EditBillDialog dialog = new EditBillDialog();
 		Bundle args = new Bundle();
