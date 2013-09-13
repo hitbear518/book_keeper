@@ -26,7 +26,7 @@ public final class BookkeeperContract {
 		
 		public static final Uri CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, PATH);
 		
-		private static final String MIME_TYPE_SUFFIX = "/vnd.wangsen.bookkeeper.provider.bill";
+		private static final String MIME_TYPE_SUFFIX = "/vnd." + AUTHORITY + ".bill";
 		public static final String CONTENT_TYPE = 
 				ContentResolver.CURSOR_DIR_BASE_TYPE + MIME_TYPE_SUFFIX;
 		public static final String CONTENT_ITEM_TYPE = 
