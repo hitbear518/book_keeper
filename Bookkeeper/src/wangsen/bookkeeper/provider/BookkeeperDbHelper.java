@@ -1,5 +1,6 @@
 package wangsen.bookkeeper.provider;
 
+import wangsen.bookkeeper.provider.BookkeeperContract.Bills;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -15,12 +16,12 @@ public class BookkeeperDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(BookkeeperContract.Bills.SQL_CREATE_BILL_TABLE);
+        db.execSQL(Bills.SQL_CREATE_BILL_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(BookkeeperContract.Bills.SQL_DELETE_BILL_TABLE);
+        db.execSQL(Bills.SQL_DELETE_BILL_TABLE);
         onCreate(db);
     }
 }
