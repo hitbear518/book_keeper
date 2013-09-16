@@ -79,7 +79,7 @@ public class BookkeeperProvider extends ContentProvider {
 			throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
-		return Uri.parse(Bills.PATH + "/" + id);
+		return Uri.withAppendedPath(uri, id + "");
 	}
 
 	@Override
